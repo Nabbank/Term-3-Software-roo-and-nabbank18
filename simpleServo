@@ -1,0 +1,48 @@
+from machine import Pin, PWM
+from simpleServo import Servo
+from time import sleep
+
+class Servo:
+    def __init__(self, pin, inverted=False, resting=0, min_angle = -90, max_angle = 90):
+        self.min_angle = min_angle
+        self.max_angle = max_angle
+        self.min_duty = 600000
+        self.max_duty = 2500000
+        self.resting = resting
+        self.current_duty = self.angle_to_duty(resting)
+        self.current_angle = resting
+        self.inverted = inverted
+        self.pin = Pin(pin)
+        self.pwm = PWM(self.pin)
+        self.pwm.freq(50)
+
+    def clamp(self, val):
+        return max(self.min_angle, min(val, self.max_angle))
+
+    def angle_to_duty(self, angle):
+        duty = (angle + 90) / (self.max_angle - self.min_angle) * (self.max_duty - self.min_duty) + self.min_duty
+        return int(duty)
+
+    def set_angle(self, angle):
+        if self.inverted:
+            angle = -angle
+           
+        angle = self.clamp(angle)
+        self.move(angle)
+
+    def move(self, angle):
+        self.current_angle = angle
+        self.current_duty = self.angle_to_duty(angle)
+        self.pwm.duty_ns(self.current_duty)
+
+    def rest(self):
+        self.move(self.resting)
+
+    def minimum(self):
+        self.move(self.min_angle)
+
+    def maximum(self):
+        self.move(self.max_angle)
+
+servos = [Servo(0), Servo(1), Servo(2), Servo(3), Servo(4), Servo(5)]
+
