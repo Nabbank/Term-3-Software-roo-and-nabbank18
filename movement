@@ -1,0 +1,16 @@
+from simpleServo import Servo
+from time import sleep
+
+claw = Servo(4)
+
+claw.minimum()
+sleep(1)
+claw.maximum()
+sleep(1)
+claw.move(45)
+sleep(1)
+claw.move(-45)
+sleep(1)
+claw.rest()
+
+print(claw.current_angle)
