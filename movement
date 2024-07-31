@@ -1,16 +1,29 @@
 from simpleServo import Servo
 from time import sleep
 
-claw = Servo(4)
+firstbase = Servo(1)
+secondbase = Servo(2)
+claw = Servo(5)
 
-claw.minimum()
-sleep(1)
-claw.maximum()
-sleep(1)
-claw.move(45)
-sleep(1)
-claw.move(-45)
-sleep(1)
-claw.rest()
+def setbase():
+    while True:
+        firstbase.move(30)
+        secondbase.move(30)
+        firstbase.move(-30)
+        secondbase.move(-30)
 
-print(claw.current_angle)
+def clawmovement():
+    while True:
+        claw.minimum()
+        sleep(1)
+        claw.maximum()
+        sleep(1)
+        claw.move(45)
+        sleep(1)
+        claw.move(-45)
+        sleep(1)
+        claw.rest()
+
+        print(claw.current_angle) 
+
+
