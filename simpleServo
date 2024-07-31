@@ -1,6 +1,4 @@
 from machine import Pin, PWM
-from simpleServo import Servo
-from time import sleep
 
 class Servo:
     def __init__(self, pin, inverted=False, resting=0, min_angle = -90, max_angle = 90):
@@ -43,6 +41,3 @@ class Servo:
 
     def maximum(self):
         self.move(self.max_angle)
-
-servos = [Servo(0), Servo(1), Servo(2), Servo(3), Servo(4), Servo(5)]
-
