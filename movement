@@ -3,14 +3,20 @@ from time import sleep
 
 firstbase = Servo(1)
 secondbase = Servo(2)
+stomach = Servo(3)
+neck = Servo(4)
 claw = Servo(5)
 
+
 def setbase():
-    while True:
         firstbase.move(30)
+        sleep(1)
         secondbase.move(30)
+        sleep(1)
         firstbase.move(-30)
+        sleep(1)
         secondbase.move(-30)
+        sleep(1)
 
 def clawmovement():
     while True:
@@ -26,4 +32,23 @@ def clawmovement():
 
         print(claw.current_angle) 
 
+def close():
+     claw.minimum()
+     sleep(1)
+     claw.maximum()
+
+def startingposition():
+    firstbase.set_angle(-10)
+    secondbase.set_angle(-90)
+    stomach.set_angle(10)
+
+startingposition()
+'''
+sleep(3)
+close()
+sleep(3)
+firstbase.set_angle(0)
+secondbase.set_angle(0)
+stomach.set_angle(0)
+'''
 
