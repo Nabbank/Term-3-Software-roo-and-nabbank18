@@ -3,6 +3,7 @@ import utime
 
 trigger = Pin(17, Pin.OUT)
 echo = Pin(16, Pin.IN)
+button = Pin(18, Pin.IN, Pin.PULL_UP)
 
 def sensing():
     trigger.low()
@@ -22,5 +23,6 @@ def sensing():
     print("Distance:", distance, "cm")
 
 while True:
-    sensing()
-    utime.sleep(1) 
+    if button.value == 0:
+      sensing()
+    utime.sleep(1)
