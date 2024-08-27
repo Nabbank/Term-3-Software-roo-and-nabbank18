@@ -1,28 +1,76 @@
 from machine import Pin
+from simpleServo import Servo
 import utime
 
 trigger = Pin(17, Pin.OUT)
-echo = Pin(16, Pin.IN)
-button = Pin(18, Pin.IN, Pin.PULL_UP)
+echo = Pin(18, Pin.IN)
+button_pin = Pin(16, Pin.IN, Pin.PULL_DOWN)
+firstbase = Servo(1)
+secondbase = Servo(2)
+stomach = Servo(3)
+neck = Servo(4)
+claw = Servo(5)
 
 def sensing():
-    trigger.low()
-    utime.sleep_us(2)
-    trigger.high()
-    utime.sleep_us(5)
-    trigger.low()
-    
-    while echo.value() == 0:
-        signaloff = utime.ticks_us()
-    
-    while echo.value() == 1:
-        signalon = utime.ticks_us()
-    
-    timepassed = signalon-signaloff
-    distance = (timepassed * 0.0343) / 2
-    print("Distance:", distance, "cm")
+        trigger.low()
+        utime.sleep_us(2)
+        trigger.high()
+        utime.sleep_us(5)
+        trigger.low()
+        
+        signaloff = 0
+        signalon = 0
+        
+        while echo.value() == 0:
+            signaloff = utime.ticks_us()
+        
+        while echo.value() == 1:  # This should be 1 to detect the echo signal
+            signalon = utime.ticks_us()
+        
+        timepassed = signalon - signaloff
+        distance = (timepassed * 0.0343) / 2
+        print("Distance:", distance, "cm")
 
-while True:
-    if button.value == 0:
-      sensing()
-    utime.sleep(1)
+def startingposition():
+    firstbase.move(-10)
+    secondbase.move(-90)
+    stomach.move(10)
+
+blockpositions = [
+    (0,0,0,0,'max'),
+    (0,1,1,1,'max'),
+    (0,2,2,2,'max')
+]
+
+finalpositions = [
+    (0,3,3,3,'min'),
+    (0,4,4,4,'min'),
+    (0,5,5,5,'min')
+]
+
+def go_to_position(position):
+    firstbase_angle, secondbase_angle, stomach_angle, neck_angle, claw_position = position
+
+    firstbase.set_angle(firstbase_angle)
+    secondbase.set_angle(secondbase_angle) 
+    stomach.set_angle(stomach_angle) 
+    neck.set_angle(neck_angle) 
+    
+    if claw_position == 'max':
+        claw.maximum()
+    else:
+        claw.minimum()
+
+def final_presentation():
+    for i in range(len(blockpositions)):
+        go_to_position(blockpositions[i])
+        claw.maximum()
+        utime.sleep(1)
+        go_to_position(blockpositions[i])
+        claw.maximum()
+        utime.sleep(1)
+
+if button_pin.value() == 1: 
+    startingposition()
+    final_presentation()
+
